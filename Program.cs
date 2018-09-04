@@ -219,6 +219,71 @@ namespace nss
                 Console.WriteLine(output);
             }
 
+            /*------------------------------------ Students and Insructors Assigned to Each Cohort ---------------------- */
+            Dictionary<int, Cohort> cohorts = new Dictionary<int, Cohort>();
+
+            db.Query<Cohort, Student, Instructor, Cohort>(@"
+                SELECT
+                    c.Id,
+                    c.Name,
+                    s.Id,
+                    s.CohortId,
+                    s.FirstName,
+                    s.LastName,
+                    i.Id,
+                    i.CohortId,
+                    i.FirstName,
+                    i.LastName
+                    FROM Cohort c
+                    JOIN Student s ON s.CohortId = c.Id
+                    JOIN Instructor i ON i.CohortId = c.Id
+            ", (cohort, student, instructor) => {
+                if (!cohorts.ContainsKey(cohort.Id))
+                {
+                    cohorts[cohort.Id] = cohort;
+                }
+
+                if (!cohorts[cohort.Id].Students.Any(currentStudent => currentStudent == student))
+                {
+                    cohorts[cohort.Id].Students.Add(student);
+                }
+
+                if (!cohorts[cohort.Id].Instructors.Contains(instructor))
+                {
+                    cohorts[cohort.Id].Instructors.Add(instructor);
+                }
+                return cohort;
+            });
+
+            foreach (KeyValuePair<int, Cohort> cohort in cohorts)
+            {
+                List<string> studentNames = new List<string>();
+                foreach (Student stu in cohort.Value.Students)
+                {
+                    // System.Console.WriteLine($"{stu.FirstName} {stu.LastName}");
+                    if (!studentNames.Contains($"{stu.FirstName} {stu.LastName}"))
+                    {
+                        studentNames.Add($"{stu.FirstName} {stu.LastName}");
+                    }
+                }
+                
+                List<string> instructorNames = new List<string>();
+                foreach (Instructor inst in cohort.Value.Instructors)
+                {
+                    if (!instructorNames.Contains($"{inst.FirstName} {inst.LastName}"))
+                    {
+                        instructorNames.Add($"{inst.FirstName} {inst.LastName}");
+                    }
+                }
+
+                string joinedStudents = String.Join(", ", studentNames);
+                string joinedInstructors = String.Join(", ", instructorNames);
+
+                Console.WriteLine($@"{cohort.Value.Name}:
+                Students: {joinedStudents}
+                Instructors: {joinedInstructors}
+                ");
+            }
 
 
 

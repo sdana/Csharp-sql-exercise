@@ -122,7 +122,27 @@ namespace nss.Data
                               '@jisie',
                               'Student success',
                               c.Id
-                        FROM Cohort c WHERE c.Name = 'Day Cohort 21'
+                        FROM Cohort c WHERE c.Name = 'Day Cohort 26'
+                    ");
+
+                    db.Execute($@"INSERT INTO Instructor
+                        SELECT null,
+                              'Emily',
+                              'Lemmon',
+                              '@emlem',
+                              'Student success',
+                              c.Id
+                        FROM Cohort c WHERE c.Name = 'Day Cohort 26'
+                    ");
+
+                    db.Execute($@"INSERT INTO Instructor
+                        SELECT null,
+                              'Jordan',
+                              'Castello',
+                              '@jcast',
+                              'Student success',
+                              c.Id
+                        FROM Cohort c WHERE c.Name = 'Day Cohort 26'
                     ");
                 }
             }
@@ -255,7 +275,7 @@ namespace nss.Data
                                 'Castello',
                                 '@jcast',
                                 c.Id
-                                FROM Cohort c WHERE c.Name = 'Day Cohort 21'
+                                FROM Cohort c WHERE c.Name = 'Day Cohort 13'
                     ");
                 }
             }
@@ -284,6 +304,44 @@ namespace nss.Data
                         1
                         FROM Exercise e WHERE e.Name = 'Nutshell'
                     ");
+
+                    db.Execute(@"
+                        INSERT INTO StudentExercise
+                        SELECT null,
+                        2,
+                        e.Id,
+                        1
+                        FROM Exercise e WHERE e.Name = 'Nutshell'
+                    ");
+
+                    db.Execute(@"
+                        INSERT INTO StudentExercise
+                        SELECT null,
+                        1,
+                        e.Id,
+                        1
+                        FROM Exercise e WHERE e.Name = 'Dream Team'
+                    ");
+
+                    db.Execute(@"
+                        INSERT INTO StudentExercise
+                        SELECT null,
+                        4,
+                        e.Id,
+                        2
+                        FROM Exercise e WHERE e.Name = 'Nutshell'
+                    ");
+
+                    db.Execute(@"
+                        INSERT INTO StudentExercise
+                        SELECT null,
+                        5,
+                        e.Id,
+                        1
+                        FROM Exercise e WHERE e.Name = 'Nutshell'
+                    ");
+
+
                 }
             }
         }
