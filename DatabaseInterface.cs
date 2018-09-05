@@ -299,8 +299,8 @@ namespace nss.Data
                     db.Execute(@"
                         INSERT INTO StudentExercise
                         SELECT null,
-                        1,
                         e.Id,
+                        1,
                         1
                         FROM Exercise e WHERE e.Name = 'Nutshell'
                     ");
@@ -308,8 +308,8 @@ namespace nss.Data
                     db.Execute(@"
                         INSERT INTO StudentExercise
                         SELECT null,
+                        e.Id,
                         2,
-                        e.Id,
                         1
                         FROM Exercise e WHERE e.Name = 'Nutshell'
                     ");
@@ -317,17 +317,17 @@ namespace nss.Data
                     db.Execute(@"
                         INSERT INTO StudentExercise
                         SELECT null,
-                        1,
                         e.Id,
-                        1
+                        5,
+                        2
                         FROM Exercise e WHERE e.Name = 'Dream Team'
                     ");
 
                     db.Execute(@"
                         INSERT INTO StudentExercise
                         SELECT null,
-                        4,
                         e.Id,
+                        4,
                         2
                         FROM Exercise e WHERE e.Name = 'Nutshell'
                     ");
@@ -335,11 +335,21 @@ namespace nss.Data
                     db.Execute(@"
                         INSERT INTO StudentExercise
                         SELECT null,
-                        5,
                         e.Id,
-                        1
+                        5,
+                        3
                         FROM Exercise e WHERE e.Name = 'Nutshell'
                     ");
+
+                    db.Execute(@"
+                        INSERT INTO StudentExercise
+                        SELECT null,
+                        e.Id,
+                        3,
+                        3
+                        FROM Exercise e WHERE e.Name = 'Dynamic Cards'
+                    ");
+
 
 
                 }
