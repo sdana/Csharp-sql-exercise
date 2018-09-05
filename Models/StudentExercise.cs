@@ -11,6 +11,9 @@ namespace nss.Data
         public Exercise Exercise { get; set; }
         public Instructor Instructor { get; set; }
 
+        public List<Student> AssignedStudents { get; set; } = new List<Student>();
+        public List<Instructor> Assigner { get; set; } = new List<Instructor>();
+
         public static void Create(SqliteConnection db)
         {
             db.Execute($@"CREATE TABLE StudentExercise (

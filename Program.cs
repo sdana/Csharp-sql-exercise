@@ -242,16 +242,8 @@ namespace nss
                 {
                     cohorts[cohort.Id] = cohort;
                 }
-
-                if (!cohorts[cohort.Id].Students.Any(currentStudent => currentStudent == student))
-                {
                     cohorts[cohort.Id].Students.Add(student);
-                }
-
-                if (!cohorts[cohort.Id].Instructors.Contains(instructor))
-                {
                     cohorts[cohort.Id].Instructors.Add(instructor);
-                }
                 return cohort;
             });
 
@@ -286,6 +278,78 @@ namespace nss
             }
 
 
+            /*--------------------------------------List Students working on each exercise ---------------------------------- */
+
+            Dictionary<int, StudentExercise> returnedExercises = new Dictionary<int, StudentExercise>();
+
+            db.Query<StudentExercise, Instructor, Student, Exercise, Cohort, StudentExercise>(@"
+                SELECT
+                    se.Id,
+                    se.StudentId,
+                    se.ExerciseId,
+                    se.InstructorId,
+                    i.Id, 
+                    i.FirstName,
+                    i.LastName,
+                    s.Id,
+                    s.FirstName,
+                    s.LastName,
+                    s.CohortId,
+                    e.Id,
+                    e.Name,
+                    c.Id,
+                    c.Name
+                FROM StudentExercise se
+                JOIN Instructor i ON se.InstructorId = i.Id
+                JOIN Student s ON se.StudentId = s.Id
+                JOIN Exercise e ON se.ExerciseId = e.Id
+                JOIN Cohort c ON s.CohortId = c.Id
+            ", (studentExercise, instructor, student, exercise, cohort) => 
+            {
+
+                if (!returnedExercises.ContainsKey(studentExercise.Id))
+                {
+                    returnedExercises[studentExercise.Id] = studentExercise;
+                }
+                student.Cohort = cohort;
+                returnedExercises[studentExercise.Id].AssignedStudents.Add(student);
+                returnedExercises[studentExercise.Id].Assigner.Add(instructor);
+                returnedExercises[studentExercise.Id].Exercise = exercise;
+                return studentExercise;
+            } );
+
+            foreach (KeyValuePair<int, StudentExercise> exercise in returnedExercises)
+            {
+                var studentInfo = (firstName: "", lastName: "", cohortName: "");
+                foreach (Student stu in exercise.Value.AssignedStudents)
+                {
+                    studentInfo = (firstName: stu.FirstName, lastName: stu.LastName, cohortName: stu.Cohort.Name);
+                }
+                    List<string> instNames = new List<string>();
+                foreach (Instructor inst in exercise.Value.Assigner)
+                {
+                    instNames.Add($"{inst.FirstName} {inst.LastName}");
+                }
+
+                System.Console.WriteLine($"{studentInfo.firstName} {studentInfo.lastName} in {studentInfo.cohortName} is assigned to {exercise.Value.Exercise.Name} by {String.Join(", ", instNames)}");
+                
+                
+                
+                //  List<string> studentNames = new List<string>();
+                //  foreach (Student stu in exercise.Value.AssignedStudents)
+                //  {
+                //      studentNames.Add($"{stu.FirstName} {stu.LastName}");
+                //  }
+
+                //  List<string> InstructorNames = new List<string>();
+                //  foreach (Instructor inst in exercise.Value.Assigner)
+                //  {
+                //      InstructorNames.Add($"{inst.FirstName} {inst.LastName}");
+                //  }
+
+                //  System.Console.WriteLine($@"{exercise.Value.Exercise.Name} is assigned to:
+                //  {String.Join(", ", studentNames)} in {String.Join(", ", InstructorNames)}");
+            }
 
             /*
                 1. Create Exercises table and seed it
